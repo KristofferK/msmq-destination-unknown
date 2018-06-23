@@ -34,7 +34,7 @@ namespace SubsystemA
                 Body = MessageQueueGenerator.CToAChannel
             };
 
-            Console.WriteLine("Requesting the address of Subsystem B trhough Subsystem C");
+            Console.WriteLine("Requesting the address of Subsystem B through Subsystem C");
             channel.Send(message);
         }
 
@@ -46,7 +46,7 @@ namespace SubsystemA
                 MessageQueue messageQueue = (MessageQueue)source;
                 var message = messageQueue.EndReceive(asyncResult.AsyncResult);
                 var SubsystemBAdderss = (string)message.Body;
-                Console.WriteLine("Received address of Subsytem B via Subsystem C: " + SubsystemBAdderss);
+                Console.WriteLine($"Received address of Subsytem B via Subsystem C: {SubsystemBAdderss}\n");
                 SendMessagesToSubsystemB(SubsystemBAdderss);
                 messageQueue.BeginReceive();
             };
@@ -74,12 +74,17 @@ namespace SubsystemA
                 };
                 Console.WriteLine($"Sending message {i + 1}: {(MessageWithInteger)message.Body}");
                 channel.Send(message);
+                if (i % 2 == 1)
+                {
+                    Console.WriteLine($"Id of sent message is {message.Id}\n");
+                }
             }
         }
 
         private static void ReceiveMessageFromSubsystemB(MessageQueue channel)
         {
             channel.Formatter = new XmlMessageFormatter(new Type[] { typeof(Int32) });
+            channel.MessageReadPropertyFilter.SetAll();
             channel.ReceiveCompleted += (object source, ReceiveCompletedEventArgs asyncResult) =>
             {
                 MessageQueue messageQueue = (MessageQueue)source;
