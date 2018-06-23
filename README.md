@@ -7,7 +7,7 @@ Using MSMQ Subsystem A must send a message to Subsystem B without either knowing
 * Subsystem A will now send four messages to Subsystem B.
   * Message 1 and 2 will have the same correlation id.
   * Message 3 and 4 will have the same correlation id.
-  * The messages will contain a integer that Subsystem B can sum (aggregation).
+  * The messages will contain an integer that Subsystem B can sum (aggregation).
 * Subsystem B will reply with two messages to Subsystem A.
   * Message 1 will contain the sum of message 1 and 2. It will have the same correlation id as those.
   * Message 2 will contain the sum of message 3 and 4. It will have the same correlation id as those.
