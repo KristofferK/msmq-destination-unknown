@@ -8,17 +8,15 @@ using System.Threading.Tasks;
 
 namespace SubsystemA
 {
-    class Program
+    class ProgramA
     {
-        private static MessageQueue messageFromSubsystemCChannel;
         static void Main(string[] args)
         {
             Console.Title = "Subsystem A";
 
-            messageFromSubsystemCChannel = MessageQueueGenerator.GenerateMessageQueue(MessageQueueGenerator.CToAChannel);
-
+            var messageFromSubsystemCChannel = MessageQueueGenerator.GenerateMessageQueue(MessageQueueGenerator.CToAChannel);
+            ReceiveMessageFromSubsystemC(messageFromSubsystemCChannel);
             RequestAdressFromSubsystemC();
-            ReceiveMessageFromSubsystemC();
 
             Console.ReadLine();
         }
@@ -36,10 +34,10 @@ namespace SubsystemA
             Console.WriteLine("Requesting the address of Subsystem B trhough Subsystem C");
             channel.Send(message);
         }
-        private static void ReceiveMessageFromSubsystemC()
+        private static void ReceiveMessageFromSubsystemC(MessageQueue channel)
         {
-            messageFromSubsystemCChannel.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
-            messageFromSubsystemCChannel.ReceiveCompleted += (object source, ReceiveCompletedEventArgs asyncResult) =>
+            channel.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
+            channel.ReceiveCompleted += (object source, ReceiveCompletedEventArgs asyncResult) =>
             {
                 MessageQueue messageQueue = (MessageQueue)source;
                 var message = messageQueue.EndReceive(asyncResult.AsyncResult);
@@ -48,12 +46,12 @@ namespace SubsystemA
                 SendMessagesToSubsystemB(SubsystemBAdderss);
                 messageQueue.BeginReceive();
             };
-            messageFromSubsystemCChannel.BeginReceive();
+            channel.BeginReceive();
         }
 
         private static void SendMessagesToSubsystemB(string addresss)
         {
-            Console.WriteLine("Sending four messages to Subsystem B");
+            Console.WriteLine("** Should send four messages to Subsystem B **");
         }
     }
 }
