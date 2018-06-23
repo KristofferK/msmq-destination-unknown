@@ -1,5 +1,5 @@
 # msmq-destination-unknown
-Using MSMQ Subsystem A must send an message to Subsystem B without either knowning each others addresses.
+Using MSMQ Subsystem A must send a message to Subsystem B without either knowning each others addresses.
 
 # The flow
 * Subsystem A sends a request-reply message to Subsystem C asking for Subsystem B's address.
