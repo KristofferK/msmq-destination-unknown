@@ -10,9 +10,15 @@ namespace SubsystemA
 {
     class Program
     {
+        private static MessageQueue messageFromSubsystemCChannel;
         static void Main(string[] args)
         {
+            Console.Title = "Subsystem A";
+
+            messageFromSubsystemCChannel = MessageQueueGenerator.GenerateMessageQueue(MessageQueueGenerator.CToAChannel);
+
             RequestAdressFromSubsystemC();
+            ReceiveMessageFromSubsystemC();
 
             Console.ReadLine();
         }
@@ -27,7 +33,27 @@ namespace SubsystemA
                 Body = MessageQueueGenerator.CToAChannel
             };
 
+            Console.WriteLine("Requesting the address of Subsystem B trhough Subsystem C");
             channel.Send(message);
+        }
+        private static void ReceiveMessageFromSubsystemC()
+        {
+            messageFromSubsystemCChannel.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
+            messageFromSubsystemCChannel.ReceiveCompleted += (object source, ReceiveCompletedEventArgs asyncResult) =>
+            {
+                MessageQueue messageQueue = (MessageQueue)source;
+                var message = messageQueue.EndReceive(asyncResult.AsyncResult);
+                var SubsystemBAdderss = (string)message.Body;
+                Console.WriteLine("Received address of Subsytem B via Subsystem C: " + SubsystemBAdderss);
+                SendMessagesToSubsystemB(SubsystemBAdderss);
+                messageQueue.BeginReceive();
+            };
+            messageFromSubsystemCChannel.BeginReceive();
+        }
+
+        private static void SendMessagesToSubsystemB(string addresss)
+        {
+            Console.WriteLine("Sending four messages to Subsystem B");
         }
     }
 }
