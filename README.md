@@ -11,3 +11,6 @@ Using MSMQ Subsystem A must send a message to Subsystem B without either knowing
 * Subsystem B will reply with two messages to Subsystem A.
   * Message 1 will contain the sum of message 1 and 2. The correlation id will be the id of the objects from message 1/2.
   * Message 2 will contain the sum of message 3 and 4. The correlation id will be the id of the objects from message 3/4.
+  
+# Result
+![Result](http://github-images.fobr.dk/msmq-destination-unknown.png "Result")
